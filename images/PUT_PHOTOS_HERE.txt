@@ -1,0 +1,5 @@
+Put 15-30 JPEG/PNG photos of the SAME STATIC SCENE here.
+Name them in sequence: 001.jpg, 002.jpg, ... (important: alphabetical ordering).
+Use 60-80% photo overlap and walk sideways/around the object (not just turn the camera).
+Use one camera, no zoom, no people moving, and textured non-reflective objects.
+Delete this text file if you wish; the script ignores it.
