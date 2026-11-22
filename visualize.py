@@ -84,3 +84,24 @@ def save_error_plot(errors, folder):
     ax.set_title('Reprojection error distribution')
     fig.tight_layout();fig.savefig(Path(folder)/'reprojection_error.png',dpi=150)
     plt.close(fig)
+
+
+def save_clean_ply(points, colors, filename, keep=0.98, radius_factor=3.0):
+    """OPTIONAL viewer-friendly copy of the cloud. A few extreme triangulations make
+    MeshLab/CloudCompare zoom out until the real structure is a tiny speck. We drop points
+    farther than radius_factor x the `keep`-percentile distance from the median. The raw
+    points.ply and every reported metric are untouched. Returns how many points were kept."""
+    pts = np.asarray(points)
+    if len(pts) < 10:
+        save_ply(pts, colors, filename); return len(pts)
+    mid = np.median(pts, axis=0)
+    r = np.linalg.norm(pts - mid, axis=1)
+    ok = np.isfinite(pts).all(axis=1) & (r <= radius_factor * np.percentile(r, 100 * keep))
+    save_ply(pts[ok], np.asarray(colors)[ok], filename)
+    return int(ok.sum())
+
+
+def save_cameras_ply(model, filename):
+    """Camera centres (red) as their own tiny cloud so they can be shown with the points."""
+    centres = np.array([-R.T @ t for _, (R, t) in sorted(model.cameras.items())])
+    save_ply(centres, np.tile(np.array([[255, 0, 0]], np.uint8), (len(centres), 1)), filename)
